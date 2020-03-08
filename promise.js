@@ -10,12 +10,12 @@ function Promise(fn) {
     this._onRejectedFns = [];
     this._promiseList = [];
 
-    function _clearFnQueue(queue, promiseList) {
+    function _clearFnQueue(fnQueue, promiseList) {
         let executor = null;
         let currentPromise = null;
 
-        while (queue.length > 0) {
-            executor = queue.shift();
+        while (fnQueue.length > 0) {
+            executor = fnQueue.shift();
             currentPromise = promiseList.shift();
 
             // executor 为函数
@@ -38,7 +38,7 @@ function Promise(fn) {
 
                         while (nextRejectedFns.length > 0) {
                             let fn = nextRejectedFns.shift();
-                            queue.push(fn.bind(currentPromise, currentPromise.value));
+                            fnQueue.push(fn.bind(currentPromise, currentPromise.value));
                         }
                     }
                 }
@@ -56,7 +56,7 @@ function Promise(fn) {
 
                     while (nextResolvedFns.length > 0) {
                         let fn = nextResolvedFns.shift();
-                        queue.push(fn.bind(currentPromise, currentPromise.value));
+                        fnQueue.push(fn.bind(currentPromise, currentPromise.value));
                     }
                 }
             } else {
@@ -270,6 +270,7 @@ let p = new Promise((resolve, reject) => {
 });
 let x = p.then(val => val + 1);
 let y = p.then(val => val + 1);
+console.log(x == y);
 
 // test3
 let p = new Promise((resolve, reject) => {
@@ -288,6 +289,9 @@ let y = p.then(val => {
     console.log('y1: ' + (val + 1));
     return (val + 1);
 });
+console.log(p);
+console.log(x);
+console.log(y);
 
 // test 4
 let p = new Promise((resolve, reject) => {
